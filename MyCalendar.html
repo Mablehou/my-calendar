@@ -2,47 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>✨ 星星人日历 ✨ 手机版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 星星人工作日历 ✨ 广州天气 · 2026</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            -webkit-tap-highlight-color: transparent; /* 去掉手机点击灰块 */
         }
 
         body {
             background: linear-gradient(145deg, #f9e9f0 0%, #ffe6f1 100%);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', '幼圆', 'Yuanti SC', 'Segoe UI Emoji', cursive, sans-serif;
             min-height: 100vh;
-            padding: 12px;
+            padding: 24px 16px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             position: relative;
         }
 
+        /* 星星装饰背景 */
+        body::before {
+            content: "✨⭐🌟💫✨";
+            font-size: 60px;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            opacity: 0.15;
+            rotate: -10deg;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "🧸🎈🍭🎀";
+            font-size: 70px;
+            bottom: 20px;
+            right: 20px;
+            position: absolute;
+            opacity: 0.15;
+            rotate: 5deg;
+            pointer-events: none;
+        }
+
         .app-wrapper {
-            max-width: 100%;
+            max-width: 1200px;
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Banner卡片 - 手机自适应 */
+        /* Banner卡片 - 只保留banner，尺寸1200x400 */
         .banner-card {
             width: 100%;
-            height: auto;
-            aspect-ratio: 3/1; /* 保持比例 */
+            height: 400px;
             background: #ffd9e8;
-            border-radius: 40px;
-            box-shadow: 0 10px 20px rgba(252, 196, 219, 0.5), 0 5px 0 #fbb0c0;
-            border: 3px solid #ffeef4;
+            border-radius: 70px;
+            box-shadow: 0 20px 35px rgba(252, 196, 219, 0.5), 0 8px 0 #fbb0c0, inset 0 -5px 0 rgba(255, 255, 255, 0.8);
+            border: 4px solid #ffeef4;
             overflow: hidden;
             position: relative;
             cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .banner-card:hover {
+            transform: translateY(-5px);
         }
 
         #bannerPreview {
@@ -54,276 +82,219 @@
 
         .banner-upload-overlay {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
+            bottom: 20px;
+            right: 20px;
             background: white;
-            border-radius: 40px;
-            padding: 8px 16px;
-            font-size: 1rem;
+            border-radius: 60px;
+            padding: 12px 28px;
+            font-size: 1.3rem;
             color: #b3446b;
-            box-shadow: 0 3px 0 #ffa5c0;
-            border: 2px solid #ffb0cc;
+            box-shadow: 0 5px 0 #ffa5c0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 3px solid #ffb0cc;
             opacity: 0.9;
+            transition: opacity 0.2s;
         }
 
-        /* 主卡片 */
-        .card {
+        .banner-upload-overlay:hover {
+            opacity: 1;
+            background: #fff2f7;
+        }
+
+        #bannerUpload {
+            display: none;
+        }
+
+        /* 卡片圆滚滚风格 */
+        .card, .calendar-panel {
             background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 40px;
-            box-shadow: 0 15px 25px rgba(252, 196, 219, 0.4), 0 5px 0 #fbb0c0;
-            padding: 20px 18px;
-            border: 3px solid #ffeef4;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 70px 70px 70px 70px / 60px 60px 70px 70px;
+            box-shadow: 0 20px 35px rgba(252, 196, 219, 0.5), 0 8px 0 #fbb0c0, inset 0 -5px 0 rgba(255, 255, 255, 0.8);
+            padding: 30px 28px;
+            border: 4px solid #ffeef4;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover, .calendar-panel:hover {
+            transform: translateY(-5px);
         }
 
         .star-title {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 2.8rem;
+            font-weight: 800;
             color: #b3446b;
-            text-shadow: 2px 2px 0 #ffc1cc;
+            text-shadow: 4px 4px 0 #ffc1cc, 6px 6px 0 rgba(255, 215, 215, 0.6);
+            letter-spacing: 2px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
         .star-title span {
             background: #ffe138;
-            border-radius: 60px;
-            padding: 4px 15px;
-            font-size: 1rem;
+            border-radius: 100px;
+            padding: 8px 25px;
+            font-size: 1.4rem;
             color: #a53f63;
-            box-shadow: 0 3px 0 #e5a000;
+            box-shadow: 0 5px 0 #e5a000;
         }
 
         /* 天气区域 */
         .weather-area {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 20px;
+            flex-wrap: wrap;
             background: #cde2ff;
-            border-radius: 50px;
-            padding: 8px 18px;
-            border: 3px solid white;
-            box-shadow: 0 4px 0 #9fc1e0;
+            border-radius: 90px;
+            padding: 12px 28px;
+            border: 4px solid white;
+            box-shadow: 0 6px 0 #9fc1e0;
         }
 
         .weather-icon {
-            font-size: 2rem;
+            font-size: 3rem;
+            filter: drop-shadow(2px 4px 0 #ffb2d0);
         }
 
         .weather-text {
-            font-size: 1.3rem;
+            font-size: 1.6rem;
             color: #2d4f7c;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .weather-small {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #517ea8;
-        }
-
-        /* 年假编辑区 */
-        .leave-editor {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #ffd2b3;
-            border-radius: 50px;
-            padding: 6px 18px;
-            border: 3px solid white;
-            box-shadow: 0 4px 0 #e5a07a;
-        }
-
-        .leave-editor label {
-            font-size: 1.2rem;
-            color: #9f4a2b;
-            font-weight: 600;
-        }
-
-        .leave-editor input {
-            font-size: 1.5rem;
-            width: 70px;
-            text-align: center;
-            border: 3px solid white;
-            border-radius: 40px;
-            background: #fff5e8;
-            padding: 5px;
-            font-weight: 700;
-            color: #b3446b;
-        }
-
-        /* 下班进度条 */
-        .offwork-progress {
-            background: #e0c3ff;
-            border-radius: 40px;
-            padding: 15px 20px;
-            margin: 15px 0;
-            border: 3px solid white;
-            box-shadow: 0 5px 0 #b591e0;
-        }
-
-        .offwork-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #542a7a;
-            margin-bottom: 10px;
-        }
-
-        .offwork-bar {
-            background: #f0d9ff;
-            border-radius: 40px;
-            height: 30px;
-            border: 3px solid white;
-            box-shadow: inset 0 2px 0 #baa2d3;
-            overflow: hidden;
-        }
-
-        .offwork-fill {
-            background: linear-gradient(90deg, #a673e0, #c78aff);
-            height: 100%;
-            width: 0%;
-            border-radius: 40px;
-            transition: width 0.3s ease;
-        }
-
-        .offwork-time {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8px;
-            font-size: 1rem;
-            color: #663f8f;
-        }
-
-        .time-slot {
-            background: white;
-            padding: 3px 12px;
-            border-radius: 30px;
-            border: 2px solid #ffb0cc;
         }
 
         /* 统计卡片 */
         .stats-grid {
             display: flex;
-            gap: 10px;
-            margin: 15px 0;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 25px 0;
         }
 
         .stat-item {
             background: #fce3f0;
-            flex: 1;
-            border-radius: 30px;
-            padding: 12px 5px;
+            flex: 1 1 160px;
+            border-radius: 50px 50px 50px 50px / 40px 40px 50px 50px;
+            padding: 20px 15px;
             text-align: center;
-            border: 3px solid white;
-            box-shadow: 0 5px 0 #f5b0ca;
+            border: 5px solid white;
+            box-shadow: 0 10px 0 #f5b0ca, inset 0 -3px 0 #ffeef4;
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             color: #b3446b;
-            margin-bottom: 5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 2.8rem;
+            font-weight: 800;
             color: #a53663;
-            text-shadow: 2px 2px 0 #ffcdd9;
+            line-height: 1.2;
+            text-shadow: 3px 3px 0 #ffcdd9;
         }
 
-        /* 月份泡泡 - 横滑区域 */
+        /* 月份泡泡 */
         .month-grid {
             display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 10px 0 15px;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .month-grid::-webkit-scrollbar {
-            display: none;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin: 25px 0 15px;
+            justify-content: center;
         }
 
         .month-tile {
             background: #ffd3e8;
-            border-radius: 40px;
-            padding: 12px 15px;
-            min-width: 90px;
-            border: 3px solid white;
-            box-shadow: 0 5px 0 #f598b8;
+            border-radius: 90px;
+            padding: 16px 8px;
+            flex: 0 0 calc(16% - 10px);
+            min-width: 110px;
+            border: 5px solid white;
+            box-shadow: 0 8px 0 #f598b8;
+            cursor: pointer;
+            transition: all 0.1s;
             text-align: center;
-            flex-shrink: 0;
         }
 
         .month-tile.selected {
             background: #fec260;
-            box-shadow: 0 5px 0 #e59400;
+            box-shadow: 0 8px 0 #e59400;
+            transform: scale(1.03);
         }
 
         .month-name {
-            font-size: 1.3rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #952d57;
         }
 
         .month-workdays {
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: #bc4777;
         }
 
-        /* 日历区域 - 手机网格 */
+        /* 日历区域 */
         .calendar-panel {
             background: #fff3f9;
-            border-radius: 40px;
-            padding: 20px 15px;
-            border: 3px solid #ffeef4;
-            box-shadow: 0 15px 25px rgba(252, 196, 219, 0.4), 0 5px 0 #fbb0c0;
         }
 
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
             background: #ffdbdb;
-            padding: 12px 15px;
-            border-radius: 40px;
-            border: 3px solid white;
+            padding: 15px 25px;
+            border-radius: 90px;
+            border: 4px solid white;
         }
 
         .calendar-title {
-            font-size: 1.4rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: #9f3e60;
+            text-shadow: 2px 2px 0 #ffb7c9;
         }
 
         .holiday-note {
             background: #a6d0fa;
-            border-radius: 30px;
-            padding: 5px 15px;
-            font-size: 1rem;
-            border: 2px solid white;
+            border-radius: 60px;
+            padding: 10px 25px;
+            font-size: 1.2rem;
+            border: 3px solid white;
         }
 
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             text-align: center;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.5rem;
+            font-weight: 700;
             color: #bd6585;
-            margin: 10px 0;
+            margin: 15px 0 10px;
         }
 
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
+            gap: 8px;
         }
 
         .day-cell {
@@ -332,278 +303,128 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 30% 40% 30% 40%;
+            border-radius: 40% 60% 40% 60% / 60% 40% 60% 40%;
             background: #fde3f0;
-            font-size: 1rem;
+            font-size: 1.3rem;
             font-weight: 600;
-            border: 2px solid white;
-            box-shadow: 0 3px 0 #fbb0cb;
+            border: 4px solid white;
+            box-shadow: 0 5px 0 #fbb0cb;
             position: relative;
-            min-height: 45px;
         }
 
+        .day-cell.workday { background: #c7f0c2; }
+        .day-cell.holiday { background: #fec7a5; border: 4px solid #ff8a5c; }
+        .day-cell.workend { background: #ffe49c; border: 4px solid #f7b32b; }
+        .day-cell.weekend { background: #f0d5ff; }
+        .day-cell.today { outline: 6px solid #ff76a5; outline-offset: 4px; }
+
         .day-number {
-            font-size: 1.1rem;
+            font-size: 1.6rem;
+            line-height: 1.2;
         }
 
         .day-label {
-            font-size: 0.7rem;
+            font-size: 0.9rem;
             background: rgba(255,255,240,0.7);
-            padding: 1px 4px;
-            border-radius: 20px;
+            padding: 2px 8px;
+            border-radius: 40px;
+            margin-top: 2px;
+            font-weight: 500;
+            color: #6d3b53;
         }
 
-        .todo-indicator {
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            background: #ff5ca0;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            border: 2px solid white;
-        }
-
+        /* 节气标签 */
         .solar-term-tag {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -8px;
+            right: -8px;
             background: #ffde59;
-            border-radius: 20px;
-            padding: 2px 4px;
-            font-size: 0.6rem;
-            border: 1px solid white;
+            border-radius: 40px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 2px solid white;
+            box-shadow: 0 3px 0 #ca9e00;
+            color: #7a4300;
         }
 
         .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin: 15px 0 5px;
+            gap: 20px;
+            margin: 30px 0 10px;
             justify-content: center;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 8px;
             background: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-            border: 2px solid #ffc6da;
-            font-size: 0.8rem;
+            padding: 8px 20px;
+            border-radius: 60px;
+            border: 3px solid #ffc6da;
         }
 
         .color-dot {
-            width: 16px;
-            height: 16px;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
-            border: 2px solid white;
+            border: 3px solid white;
+            box-shadow: 0 3px 0 #e0a0b5;
         }
 
         .footnote {
             background: #ffe9f0;
-            border-radius: 40px;
-            padding: 12px 15px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            border: 3px solid white;
-        }
-
-        /* 弹窗 - 手机优化 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(3px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 15px;
-        }
-
-        .todo-modal {
-            background: #fff5fa;
-            border-radius: 50px;
-            padding: 25px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 4px solid white;
-            box-shadow: 0 20px 30px rgba(252, 130, 180, 0.3), 0 8px 0 #fbb0c0;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            background: #ffe1e8;
-            padding: 12px 18px;
-            border-radius: 40px;
-            border: 3px solid white;
-        }
-
-        .modal-date {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #b3446b;
-        }
-
-        .modal-close {
-            background: #ffb0cc;
-            border: 3px solid white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 3px 0 #e596b5;
-        }
-
-        .modal-todo-list {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
-
-        .modal-todo-item {
-            background: white;
-            border-radius: 30px;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border: 2px solid #ffb0cc;
-        }
-
-        .modal-todo-text {
+            border-radius: 80px;
+            padding: 18px 25px;
+            margin-top: 25px;
             font-size: 1.1rem;
-            word-break: break-word;
-            margin-bottom: 8px;
-        }
-
-        .modal-todo-reminder {
-            font-size: 0.9rem;
-            background: #ffe9d0;
-            padding: 3px 12px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-
-        .modal-todo-actions {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-        }
-
-        .modal-todo-btn {
-            background: #fce3f0;
-            border: 2px solid white;
-            border-radius: 30px;
-            padding: 4px 12px;
-            font-size: 0.9rem;
-            box-shadow: 0 2px 0 #e5a0b8;
-        }
-
-        .modal-input-area {
-            background: #ffeef4;
-            border-radius: 40px;
-            padding: 15px;
-            border: 3px solid white;
-        }
-
-        .modal-input-area textarea {
-            width: 100%;
-            height: 70px;
-            border: 3px solid white;
-            border-radius: 30px;
-            padding: 12px;
-            font-size: 1rem;
-            font-family: inherit;
-            resize: none;
-            background: white;
-        }
-
-        .modal-reminder-set {
-            display: flex;
-            gap: 8px;
-            margin: 12px 0;
-            flex-wrap: wrap;
-        }
-
-        .modal-reminder-set input {
-            flex: 2;
-            min-width: 160px;
-            border: 3px solid white;
-            border-radius: 40px;
-            padding: 10px;
-            font-size: 0.9rem;
-        }
-
-        .modal-reminder-set button {
-            flex: 1;
-            background: #a0e0a0;
-            border: 3px solid white;
-            border-radius: 40px;
-            padding: 10px;
-            font-size: 1rem;
-            color: #2d6b2d;
-            font-weight: 700;
-            box-shadow: 0 3px 0 #7fb07f;
+            border: 4px solid white;
         }
 
         button {
             background: #fec9de;
             border: none;
-            border-radius: 50px;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            padding: 15px 40px;
+            border-radius: 80px;
+            font-size: 1.4rem;
+            font-weight: 700;
             color: #9f325a;
-            box-shadow: 0 5px 0 #e596b5;
-            border: 3px solid white;
-            width: 100%;
-            margin-top: 8px;
+            box-shadow: 0 8px 0 #e596b5, 0 5px 15px #ffc1d6;
+            cursor: pointer;
+            border: 4px solid white;
+            transition: all 0.07s;
         }
 
         button:active {
-            transform: translateY(3px);
+            transform: translateY(6px);
             box-shadow: 0 2px 0 #e596b5;
         }
 
-        .flex-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
+        .star-emoji {
+            font-size: 2rem;
+            filter: drop-shadow(0 3px 0 #ff9ec6);
         }
     </style>
 </head>
 <body>
 <div class="app-wrapper">
-    <!-- Banner卡片 -->
-  <!-- Banner卡片 - 固定图片版 -->
-<div class="banner-card">
-    <img id="bannerPreview" src="https://p9-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oof9EAWf9oVTDAuWNHEXIJQRwAFZEnAk1kDeAE~tplv-dy-aweme-images:q75.webp" alt="星星人banner" style="width:100%; height:100%; object-fit:cover;">
-    <!-- 注意：下面这行删掉了上传按钮和功能，图片现在是固定的 -->
-</div>
+    <!-- Banner卡片 - 只保留banner，尺寸1200x400 -->
+    <div class="banner-card" onclick="document.getElementById('bannerUpload').click()">
+        <img id="bannerPreview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 400'%3E%3Crect width='1200' height='400' fill='%23ffb3c6'/%3E%3Ctext x='60' y='220' font-size='80' fill='%23b3446b' font-family='Comic Sans MS'%3E✨ 广州 · 星星历 2026 ✨%3C/text%3E%3Ctext x='60' y='320' font-size='40' fill='%239f3e62'%3E🌸 点击上传你的专属Banner 🌸%3C/text%3E%3C/svg%3E" alt="banner">
+        <div class="banner-upload-overlay">
+            <span class="star-emoji">✨</span> 更换Banner <span class="star-emoji">🌟</span>
+        </div>
+        <input type="file" id="bannerUpload" accept="image/*">
+    </div>
 
     <div class="card">
-        <div class="flex-row" style="justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="star-title">
-                📅 星星人 <span>2026 广州</span>
+                📅 星星人工作日历 <span>2026 广州</span>
             </div>
+            <!-- 天气区域 - 固定广州 -->
             <div class="weather-area" id="weatherWidget">
                 <span class="weather-icon" id="weatherIcon">☀️</span>
                 <div>
@@ -613,53 +434,33 @@
             </div>
         </div>
 
-        <!-- 年假编辑区 -->
-        <div class="flex-row" style="justify-content: space-between; margin: 15px 0;">
-            <div class="leave-editor">
-                <label>🏖️ 年假</label>
-                <input type="number" id="annualLeaveInput" min="0" max="30" value="4">
-            </div>
-            <div style="background:#c1e0ff; padding:6px 18px; border-radius:50px; border:3px solid white;">
-                📆 <span id="todayDateLabel"></span>
-            </div>
-        </div>
-
-        <!-- 下班进度条 -->
-        <div class="offwork-progress">
-            <div class="offwork-header">
-                <span>🏃 下班进度</span>
-                <span id="offworkPercent">0%</span>
-            </div>
-            <div class="offwork-bar">
-                <div class="offwork-fill" id="offworkFill"></div>
-            </div>
-            <div class="offwork-time">
-                <span class="time-slot">9:00-12:30</span>
-                <span class="time-slot">14:00-18:30</span>
-            </div>
+        <!-- 年假徽章 -->
+        <div style="display: flex; gap: 12px; margin: 20px 0 10px;">
+            <div class="badge" style="background:#ffd2b3;">🏖️ 年假 <span>4天</span></div>
+            <div class="badge" style="background:#c1e0ff;">📆 今天 <span id="todayDateLabel"></span></div>
         </div>
 
         <!-- 总工作日 -->
-        <div style="background:#f09eb5; border-radius:40px; padding:15px; text-align:center; margin:10px 0;">
-            <span style="font-size:1.3rem; color:white;">📆 2026 实际工作日</span>
-            <span style="font-size:2.5rem; background:white; padding:5px 25px; border-radius:50px; display:inline-block; margin-top:5px;" id="totalWorkdaysDisplay">--</span>
+        <div class="total-row" style="background:#f09eb5; border-radius:90px; padding:20px 28px; box-shadow:0 10px 0 #c45d80;">
+            <span style="font-size:2rem;">📆 2026 实际工作日</span>
+            <span style="font-size:4rem; background:white; padding:10px 40px; border-radius:90px;" id="totalWorkdaysDisplay">--</span>
         </div>
 
         <!-- 进度条 -->
-        <div style="margin: 10px 0;">
-            <div style="display: flex; justify-content: space-between; font-size:1.2rem;">
+        <div style="margin: 20px 0;">
+            <div style="display: flex; justify-content: space-between; font-size:1.8rem;">
                 <span>⏳ 剩余工作日</span>
                 <span id="remainingDays">--</span>
             </div>
-            <div style="background:#ffc1d0; border-radius:40px; height:25px; border:3px solid white;">
-                <div id="progressFill" style="background:#a0e0a0; width:0%; height:100%; border-radius:40px;"></div>
+            <div style="background:#ffc1d0; border-radius:60px; height:40px; border:5px solid white; box-shadow:inset 0 3px 0 #d990aa;">
+                <div id="progressFill" style="background:#a0e0a0; width:0%; height:100%; border-radius:60px; box-shadow:0 0 15px #b0f0b0;"></div>
             </div>
         </div>
 
         <!-- 统计卡片 -->
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-label">📅 已过</div>
+                <div class="stat-label">📅 已过工作日</div>
                 <div class="stat-value" id="passedWorkdays">-</div>
             </div>
             <div class="stat-item">
@@ -671,18 +472,18 @@
                 <div class="stat-value" id="netWorkdays">-</div>
             </div>
         </div>
+
+        <!-- 月份泡泡 -->
+        <div style="font-size:1.8rem; margin-top:25px;">⭐ 戳戳月份看日历 ⭐</div>
+        <div class="month-grid" id="monthGrid"></div>
     </div>
 
-    <!-- 日历面板 -->
+    <!-- 日历卡片 -->
     <div class="calendar-panel">
         <div class="calendar-header">
             <span class="calendar-title" id="calendarMonthTitle">📅 2026年 1月</span>
             <span class="holiday-note" id="holidaySummary"></span>
         </div>
-        
-        <!-- 月份选择器（横滑） -->
-        <div class="month-grid" id="monthGrid"></div>
-        
         <div class="weekdays">
             <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div>
         </div>
@@ -690,52 +491,26 @@
         
         <!-- 图例 -->
         <div class="legend">
-            <div class="legend-item"><span class="color-dot" style="background:#c7f0c2;"></span> 班</div>
-            <div class="legend-item"><span class="color-dot" style="background:#fec7a5;"></span> 假</div>
-            <div class="legend-item"><span class="color-dot" style="background:#ffe49c;"></span> 补</div>
-            <div class="legend-item"><span class="color-dot" style="background:#f0d5ff;"></span> 休</div>
+            <div class="legend-item"><span class="color-dot" style="background:#c7f0c2;"></span> 工作日</div>
+            <div class="legend-item"><span class="color-dot" style="background:#fec7a5;"></span> 节假日</div>
+            <div class="legend-item"><span class="color-dot" style="background:#ffe49c;"></span> 补班</div>
+            <div class="legend-item"><span class="color-dot" style="background:#f0d5ff;"></span> 周末</div>
         </div>
 
+        <!-- 节气/节日名称 -->
         <div class="footnote" id="monthSpecialNames">
             🌟 节气/节日：加载中...
         </div>
 
-        <button id="refreshBtn">🔄 刷新</button>
-    </div>
-</div>
-
-<!-- 待办弹窗 -->
-<div class="modal-overlay" id="todoModal">
-    <div class="todo-modal">
-        <div class="modal-header">
-            <span class="modal-date" id="modalDate">2026-01-01</span>
-            <div class="modal-close" id="closeModal">×</div>
-        </div>
-        
-        <div class="modal-todo-list" id="modalTodoList">
-            <div style="text-align: center; color: #b3446b; padding: 20px;">✨ 点击日期添加待办 ✨</div>
-        </div>
-
-        <div class="modal-input-area">
-            <textarea id="modalTodoInput" placeholder="写点什么... (最多100字)" maxlength="100"></textarea>
-            <div style="text-align:right; color:#b3446b;" id="modalCharCount">0/100</div>
-            
-            <div class="modal-reminder-set">
-                <input type="datetime-local" id="modalReminderTime">
-                <button id="modalAddBtn">➕ 添加</button>
-            </div>
-            
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button class="modal-todo-btn" id="modalClearCompletedBtn">✅ 清除已完成</button>
-                <button class="modal-todo-btn delete" id="modalClearAllBtn">🗑️ 清空</button>
-            </div>
+        <div style="display: flex; justify-content: flex-end; gap:20px; margin-top:20px;">
+            <button id="refreshBtn">🔄 刷新小星星</button>
         </div>
     </div>
 </div>
 
 <script>
 (function() {
-    // 节假日数据 (保持不变)
+    // 2026 节假日 + 补班 (国务院发布)
     const HOLIDAYS_2026 = [
         '2026-01-01','2026-01-02','2026-01-03',
         '2026-02-15','2026-02-16','2026-02-17','2026-02-18','2026-02-19','2026-02-20','2026-02-21','2026-02-22','2026-02-23',
@@ -750,6 +525,7 @@
         '2026-01-04','2026-02-14','2026-02-28','2026-05-09','2026-09-20','2026-10-10'
     ];
 
+    // 二十四节气数据
     const SOLAR_TERMS_2026 = {
         '2026-01-05': '小寒', '2026-01-20': '大寒',
         '2026-02-03': '立春', '2026-02-18': '雨水',
@@ -765,6 +541,7 @@
         '2026-12-07': '大雪', '2026-12-21': '冬至'
     };
 
+    // 节假日名称
     const HOLIDAY_NAMES = {
         '2026-01-01': '元旦','2026-01-02': '元旦','2026-01-03': '元旦',
         '2026-02-15': '春节','2026-02-16': '春节','2026-02-17': '春节','2026-02-18': '春节','2026-02-19': '春节','2026-02-20': '春节','2026-02-21': '春节','2026-02-22': '春节','2026-02-23': '春节',
@@ -775,14 +552,7 @@
         '2026-10-01': '国庆','2026-10-02': '国庆','2026-10-03': '国庆','2026-10-04': '国庆','2026-10-05': '国庆','2026-10-06': '国庆','2026-10-07': '国庆'
     };
 
-    const WORK_SCHEDULE = [
-        { start: 9 * 60, end: 12 * 60 + 30 },
-        { start: 14 * 60, end: 18 * 60 + 30 }
-    ];
-    const TOTAL_WORK_MINUTES = 480;
-
-    let todos = JSON.parse(localStorage.getItem('starCalendarTodos')) || {};
-    let currentModalDate = '';
+    const ANNUAL_LEAVE = 4;  // 年假天数
 
     // 工具函数
     function isWeekend(date) {
@@ -849,6 +619,7 @@
         return cnt;
     }
 
+    // 获取当月所有特殊名称
     function getMonthSpecialNames(month) {
         const names = [];
         const start = new Date(2026, month-1, 1);
@@ -863,176 +634,7 @@
         return names.length ? '✨ ' + names.join(' · ') : '🌟 本月无特殊节气/节日';
     }
 
-    function updateOffWorkProgress() {
-        const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
-        
-        if (!isWorkday(now)) {
-            document.getElementById('offworkPercent').innerText = '休息日 🎉';
-            document.getElementById('offworkFill').style.width = '0%';
-            return;
-        }
-
-        let workedMinutes = 0;
-        for (const slot of WORK_SCHEDULE) {
-            if (currentMinutes > slot.end) {
-                workedMinutes += (slot.end - slot.start);
-            } else if (currentMinutes > slot.start) {
-                workedMinutes += (currentMinutes - slot.start);
-            }
-        }
-
-        let progress = (workedMinutes / TOTAL_WORK_MINUTES) * 100;
-        if (progress > 100) progress = 100;
-        
-        document.getElementById('offworkPercent').innerText = `${Math.round(progress)}%`;
-        document.getElementById('offworkFill').style.width = progress + '%';
-    }
-
-    function updateStats() {
-        const total = getTotalWorkdays2026();
-        document.getElementById('totalWorkdaysDisplay').innerText = total;
-        
-        const passed = getPassedWorkdays();
-        document.getElementById('passedWorkdays').innerText = passed;
-        
-        const remaining = total - passed;
-        document.getElementById('remainingDays').innerText = remaining;
-        document.getElementById('remainingWithLeave').innerText = remaining;
-        
-        const annualLeave = parseInt(document.getElementById('annualLeaveInput').value) || 0;
-        const net = remaining - annualLeave;
-        document.getElementById('netWorkdays').innerText = net >= 0 ? net : 0;
-        
-        const percent = (passed/total)*100;
-        document.getElementById('progressFill').style.width = Math.min(percent,100)+'%';
-        
-        const today = new Date();
-        document.getElementById('todayDateLabel').innerText = `${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
-    }
-
-    function saveTodos() {
-        localStorage.setItem('starCalendarTodos', JSON.stringify(todos));
-    }
-
-    function openModal(date) {
-        currentModalDate = date;
-        document.getElementById('modalDate').innerText = date;
-        document.getElementById('todoModal').style.display = 'flex';
-        renderModalTodos();
-    }
-
-    function closeModal() {
-        document.getElementById('todoModal').style.display = 'none';
-    }
-
-    function renderModalTodos() {
-        const list = document.getElementById('modalTodoList');
-        
-        if (!todos[currentModalDate] || todos[currentModalDate].length === 0) {
-            list.innerHTML = '<div style="text-align: center; color: #b3446b; padding: 20px;">✨ 暂无待办 ✨</div>';
-            return;
-        }
-
-        list.innerHTML = '';
-        todos[currentModalDate].forEach((todo, index) => {
-            const item = document.createElement('div');
-            item.className = `modal-todo-item${todo.completed ? ' completed' : ''}`;
-            
-            let reminderHtml = '';
-            if (todo.reminder) {
-                const reminderDate = new Date(todo.reminder);
-                reminderHtml = `<div class="modal-todo-reminder">⏰ ${reminderDate.toLocaleString()}</div>`;
-            }
-
-            item.innerHTML = `
-                <div class="modal-todo-text">${todo.text}</div>
-                ${reminderHtml}
-                <div class="modal-todo-actions">
-                    <button class="modal-todo-btn" onclick="window.toggleTodo('${currentModalDate}', ${index})">✓ 完成</button>
-                    <button class="modal-todo-btn delete" onclick="window.deleteTodo('${currentModalDate}', ${index})">🗑️ 删除</button>
-                </div>
-            `;
-            list.appendChild(item);
-        });
-    }
-
-    window.toggleTodo = function(date, index) {
-        if (todos[date] && todos[date][index]) {
-            todos[date][index].completed = !todos[date][index].completed;
-            saveTodos();
-            renderModalTodos();
-            renderCalendar(new Date(date).getMonth() + 1);
-        }
-    };
-
-    window.deleteTodo = function(date, index) {
-        if (todos[date]) {
-            todos[date].splice(index, 1);
-            if (todos[date].length === 0) {
-                delete todos[date];
-            }
-            saveTodos();
-            renderModalTodos();
-            renderCalendar(new Date(date).getMonth() + 1);
-        }
-    };
-
-    function addTodo() {
-        const input = document.getElementById('modalTodoInput');
-        const reminder = document.getElementById('modalReminderTime').value;
-        const text = input.value.trim();
-
-        if (!text) {
-            alert('请输入待办内容');
-            return;
-        }
-
-        if (text.length > 100) {
-            alert('内容不能超过100字');
-            return;
-        }
-
-        if (!todos[currentModalDate]) {
-            todos[currentModalDate] = [];
-        }
-
-        todos[currentModalDate].push({
-            text: text,
-            reminder: reminder || null,
-            completed: false,
-            createdAt: new Date().toISOString()
-        });
-
-        saveTodos();
-        input.value = '';
-        document.getElementById('modalReminderTime').value = '';
-        document.getElementById('modalCharCount').innerText = '0/100';
-        renderModalTodos();
-        renderCalendar(new Date(currentModalDate).getMonth() + 1);
-    }
-
-    function clearCompleted() {
-        if (todos[currentModalDate]) {
-            todos[currentModalDate] = todos[currentModalDate].filter(t => !t.completed);
-            if (todos[currentModalDate].length === 0) {
-                delete todos[currentModalDate];
-            }
-            saveTodos();
-            renderModalTodos();
-            renderCalendar(new Date(currentModalDate).getMonth() + 1);
-        }
-    }
-
-    function clearAll() {
-        if (todos[currentModalDate] && confirm('确定清空当天的所有待办吗？')) {
-            delete todos[currentModalDate];
-            saveTodos();
-            renderModalTodos();
-            renderCalendar(new Date(currentModalDate).getMonth() + 1);
-        }
-    }
-
+    // 渲染月份泡泡
     function renderMonthTiles(selectedMonth) {
         const grid = document.getElementById('monthGrid');
         grid.innerHTML = '';
@@ -1050,6 +652,7 @@
         }
     }
 
+    // 渲染日历
     function renderCalendar(month) {
         const year = 2026;
         const firstDay = new Date(year, month-1, 1);
@@ -1070,7 +673,7 @@
         }
 
         document.getElementById('calendarMonthTitle').innerText = `📅 ${year}年${month}月`;
-        document.getElementById('holidaySummary').innerHTML = `🎉 ${holidayCount}假·⚡${workendCount}补`;
+        document.getElementById('holidaySummary').innerHTML = `🎉 ${holidayCount}天假 · ⚡ ${workendCount}天补班`;
 
         const cur = new Date(startDate);
         for (let i=0; i<42; i++) {
@@ -1079,48 +682,32 @@
             const dateStr = ymd(cur);
             const isCurrent = cur.getMonth()+1 === month;
 
-            if (!isCurrent) {
-                cell.style.opacity='0.3';
-                cell.innerHTML = `<span class="day-number">${cur.getDate()}</span>`;
-            } else {
-                if (isHoliday(cur)) cell.classList.add('holiday');
-                else if (isWorkend(cur)) cell.classList.add('workend');
-                else if (isWorkday(cur)) cell.classList.add('workday');
-                else if (isWeekend(cur)) cell.classList.add('weekend');
+            if (!isCurrent) cell.style.opacity='0.4';
 
-                if (dateStr === todayStr) cell.classList.add('today');
-                
-                if (todos[dateStr] && todos[dateStr].length > 0) {
-                    cell.classList.add('has-todo');
-                    const indicator = document.createElement('span');
-                    indicator.className = 'todo-indicator';
-                    indicator.innerText = todos[dateStr].length;
-                    cell.appendChild(indicator);
-                }
+            if (isCurrent && isHoliday(cur)) cell.classList.add('holiday');
+            else if (isCurrent && isWorkend(cur)) cell.classList.add('workend');
+            else if (isCurrent && isWorkday(cur)) cell.classList.add('workday');
+            else if (isCurrent && isWeekend(cur)) cell.classList.add('weekend');
 
-                if (SOLAR_TERMS_2026[dateStr]) {
-                    const termSpan = document.createElement('span');
-                    termSpan.className = 'solar-term-tag';
-                    termSpan.innerText = SOLAR_TERMS_2026[dateStr];
-                    cell.appendChild(termSpan);
-                }
+            if (dateStr === todayStr) cell.classList.add('today');
 
-                let bottomLabel = '';
+            // 添加节气标签
+            if (isCurrent && SOLAR_TERMS_2026[dateStr]) {
+                const termSpan = document.createElement('span');
+                termSpan.className = 'solar-term-tag';
+                termSpan.innerText = SOLAR_TERMS_2026[dateStr];
+                cell.appendChild(termSpan);
+            }
+
+            cell.innerHTML += `<span class="day-number">${cur.getDate()}</span>`;
+            let bottomLabel = '';
+            if (isCurrent) {
                 if (isHoliday(cur)) bottomLabel = HOLIDAY_NAMES[dateStr] || '假';
-                else if (isWorkend(cur)) bottomLabel = '补';
+                else if (isWorkend(cur)) bottomLabel = '补班';
                 else if (isWeekend(cur)) bottomLabel = '休';
                 else bottomLabel = '班';
-
-                cell.innerHTML = `<span class="day-number">${cur.getDate()}</span><span class="day-label">${bottomLabel}</span>`;
-
-                cell.addEventListener('click', () => {
-                    openModal(dateStr);
-                });
             }
-
-            if (!isCurrent) {
-                cell.innerHTML = `<span class="day-number">${cur.getDate()}</span>`;
-            }
+            cell.innerHTML += `<span class="day-label">${bottomLabel}</span>`;
 
             daysEl.appendChild(cell);
             cur.setDate(cur.getDate()+1);
@@ -1129,6 +716,24 @@
         document.getElementById('monthSpecialNames').innerText = getMonthSpecialNames(month);
     }
 
+    // 更新统计
+    function updateStats() {
+        const total = getTotalWorkdays2026();
+        document.getElementById('totalWorkdaysDisplay').innerText = total;
+        const passed = getPassedWorkdays();
+        document.getElementById('passedWorkdays').innerText = passed;
+        const remaining = total - passed;
+        document.getElementById('remainingDays').innerText = remaining;
+        document.getElementById('remainingWithLeave').innerText = remaining;
+        const net = remaining - ANNUAL_LEAVE;
+        document.getElementById('netWorkdays').innerText = net >=0 ? net : 0;
+        const percent = (passed/total)*100;
+        document.getElementById('progressFill').style.width = Math.min(percent,100)+'%';
+        const today = new Date();
+        document.getElementById('todayDateLabel').innerText = `${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
+    }
+
+    // 获取广州天气
     async function fetchGuangzhouWeather() {
         try {
             const latitude = 23.1291;
@@ -1149,21 +754,7 @@
         }
     }
 
-    // 事件绑定
-    document.getElementById('modalTodoInput').addEventListener('input', function() {
-        document.getElementById('modalCharCount').innerText = this.value.length + '/100';
-    });
-
-    document.getElementById('modalAddBtn').addEventListener('click', addTodo);
-    document.getElementById('modalClearCompletedBtn').addEventListener('click', clearCompleted);
-    document.getElementById('modalClearAllBtn').addEventListener('click', clearAll);
-    document.getElementById('closeModal').addEventListener('click', closeModal);
-    document.getElementById('todoModal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-
-    document.getElementById('annualLeaveInput').addEventListener('input', updateStats);
-
+    // banner上传
     document.getElementById('bannerUpload').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -1175,27 +766,20 @@
         }
     });
 
-    document.getElementById('refreshBtn').addEventListener('click', ()=> {
-        updateStats();
-        const curMonth = new Date().getMonth() + 1;
-        renderMonthTiles(curMonth);
-        renderCalendar(curMonth);
-        fetchGuangzhouWeather();
-        updateOffWorkProgress();
-    });
-
-    if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-        Notification.requestPermission();
-    }
-
     // 初始化
     const currentMonth = new Date().getMonth() + 1;
     renderMonthTiles(currentMonth);
     renderCalendar(currentMonth);
     updateStats();
     fetchGuangzhouWeather();
-    updateOffWorkProgress();
-    setInterval(updateOffWorkProgress, 60000);
+
+    document.getElementById('refreshBtn').addEventListener('click', ()=> {
+        updateStats();
+        const curMonth = new Date().getMonth() + 1;
+        renderMonthTiles(curMonth);
+        renderCalendar(curMonth);
+        fetchGuangzhouWeather();
+    });
 })();
 </script>
 </body>
